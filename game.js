@@ -3,15 +3,14 @@ var config = {
     width: 1200,
     height: 1200,
     physics: {
-        default: 'arcade',
-        arcade: {
-            fps: 60,
-            gravity: { y: 0 }
+        default: 'matter',
+        matter: {
+            debug: true
         }
     },
     scene: {
         preload: preload,
-        init:init,
+        init: init,
         create: create,
         update: update
     },
@@ -20,7 +19,8 @@ var config = {
     backgroundColor: '555555'
 };
 
-var container;
+// global vars
+var car;
 
 var game = new Phaser.Game(config);
 
@@ -46,22 +46,18 @@ function preload() {
 
 
     // roues
-    this.load.spritesheet('lw', 'assets/lw.png', {
+    this.load.atlas('roues', 'assets/roues.png', 'assets/roues.json');
+
+    // pigeon
+    this.load.atlas('pigeon', 'assets/spritesheet.png', 'assets/sprites.json');
+    /*this.load.spritesheet('rw', 'assets/rw.png', {
         frameWidth: 75,
         frameHeight: 50,
         startFrame: 0,
         endFrame: 2,
         margin: 1,
         spacing: 1,
-    });
-    this.load.spritesheet('rw', 'assets/rw.png', {
-        frameWidth: 75,
-        frameHeight: 50,
-        startFrame: 0,
-        endFrame: 2,
-        margin: 1,
-        spacing: 1,
-    });
+    }); */
 }
 
 function init() {
@@ -79,22 +75,33 @@ function init() {
 }
 
 function create() {
+    /* this.anims.create({
+        key: 'roues',
+        frames: this.anims.generateFrameNames('roues',{
+                prefix: 'roue_',
+                end: 2,
+                zeroPad: 1
+            }),
+        repeat: -1
+    });
+    this.lw = this.add.sprite(800,800,'roues'); */
+    //this.lw.play('roues');
 
-    /* var image1 = this.add.image(0, -30, 'mushroom');
-    var image2 = this.add.image(-40, 30, 'mushroom');
-    var image3 = this.add.image(40, 30, 'mushroom');
 
-    container = this.add.container(400, 200, [ image1, image2, image3 ]);
+    console.log(this.anims.create({
+        key: 'pigeon',
+        frames: this.anims.generateFrameNames('pigeon',{
+                prefix: 'body_',
+                end: 15,
+                zeroPad: 2
+            }),
+        repeat: -1
+    }));
+    this.lw = this.add.sprite(400,400,'pigeon');
+    this.lw.play('pigeon');
 
-    //  A Container has a default size of 0x0, so we need to give it a size before enabling a physics
-    //  body or it'll be given the default body size of 64x64.
-    container.setSize(128, 64);
-
-    this.physics.world.enable(container);
-
-    container.body.setVelocity(100, 200).setBounce(1, 1).setCollideWorldBounds(true); */
     // build car
-    let carA = [];
+    /* let carA = [];
     // depth 1
     let flw = this.add.sprite(-150, -100, 'lw').setOrigin(0, 0);
     let frw = this.add.sprite(75, -100, 'rw').setOrigin(0, 0);
@@ -103,12 +110,14 @@ function create() {
     // --> animate wheels
     carA.push(flw, frw, blw, brw);
 
-    // set up car parts in 5x6 grid
+    // set up car parts in 5x6 grid measuring 250x300
     let step = 50;
+    // for each row
     for (let i = 0; i < this.carDA.length; i++) {
-
+        // get each column
         for (let j = 0; j < this.carDA[i].length; j++) {
             let t = this.carDA[i][j];
+            // future container origin is center, so -125, -150 is top left
             let part = this.add.sprite(((j * step) - 125), ((i * step) - 150), t).setOrigin(0, 0).setInteractive().setDepth(5);
             // --> add collision listener
             carA.push(part);
@@ -118,46 +127,32 @@ function create() {
 
 
     let cockpit = this.add.sprite(-75, -50, 'cockpit').setOrigin(0, 0);
+    // center in center
     let head = this.add.sprite(0, 50, 'head');
     // --> add head animation
     carA.push(cockpit, head);
-
     // assemble car
-    this.car = this.add.container(350, 350, carA);
-    this.physics.world.enable(this.car);
-    this.car.setSize(250,300);
-    console.log(this.car.body);
+    car = this.add.container(350, 350, carA);
 
-    this.car.body.setBounce(1, 1).setCollideWorldBounds(true);
-
-    //this.car.body.setDamping(true);
-    this.car.body.setDrag(0.99);
-    //this.car.body.setMaxVelocity(200);
+    // physics - matter
+    this.matter.world.setBounds(0, 0, 1200, 1200);
+    let wall = this.matter.add.sprite(0, 1100, 'wall'); */
 
     this.cursors = this.input.keyboard.createCursorKeys();
 }
 
 function update() {
-    if (this.cursors.up.isDown){
-        this.physics.velocityFromRotation(this.car.rotation, 60, this.car.body.acceleration);
-         //this.v--;
-        //this.car.body.setVelocity(0,this.v);
-        
-     } else{
-         //
-     }
-     // turning
-     if (this.cursors.left.isDown)
-     {
-         this.car.body.setAngularVelocity(-60);
-     }
-     else if (this.cursors.right.isDown)
-     {
-         this.car.body.setAngularVelocity(60);
-     }
-     else
-     {
-         this.car.body.setAngularDrag(60);
-     }
- 
+    if (this.cursors.up.isDown) {
+
+    } else {
+        //
+    }
+    // turning
+    if (this.cursors.left.isDown) {
+
+    } else if (this.cursors.right.isDown) {
+
+    } else {
+
+    }
 }
